@@ -92,11 +92,15 @@ export class AuthService {
       await user.update({ verificationAttempts: user.verificationAttempts + 1 });
       throw new UnauthorizedException('Invalid verification code.');
     }
+    
+    const tokens = await this.generateTokens(user);
+    const hashedToken = await this.hashToken(tokens.refreshToken);
 
     await user.update({
       verificationCode: null,
       verificationAttempts: 0,
       isRegistered: true,
+      refreshToken: hashedToken
     });
 
     return this.generateTokens(user);
@@ -200,17 +204,20 @@ export class AuthService {
     const payload = this.verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET_HEX);
   
     if (!payload) {
+      console.log('---------1 payload: ', payload)
       throw new UnauthorizedException({ message: 'Invalid refresh token' });
     }
   
     const user = await this.usersService.getUserByFieldName(payload.id, 'id');
   
     if (!user || !user.refreshToken) {
+      console.log('---------2 user: ', user)
       throw new UnauthorizedException({ message: 'Invalid refresh token' });
     }
   
     const isMatch = await this.compareToken(refreshToken, user.refreshToken);
     if (!isMatch) {
+      console.log('---------3 isMatch: ', isMatch)
       throw new UnauthorizedException({ message: 'Invalid refresh token' });
     }
   

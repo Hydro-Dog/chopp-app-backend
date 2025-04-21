@@ -15,10 +15,6 @@ export class AuthController {
   @Post('/login')
   async login(@Body() authDto: AuthDto, @Res({ passthrough: true }) response) {
     const data = await this.authService.login(authDto);
-    response.cookie('refreshToken', data.refreshToken, {
-      maxAge: expireParseByHours(process.env.JWT_REFRESH_EXPIRATION),
-      httpOnly: true,
-    });
     return data;
   }
 
