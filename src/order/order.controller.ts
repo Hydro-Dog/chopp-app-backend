@@ -12,11 +12,13 @@ import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles-auth.guard';
 import { CreateOrderDTO } from './dto/create-order.dto';
 import { ORDER_STATUS } from 'src/shared/enums';
+import { AppEnabledGuard } from 'src/shared/guards';
 
 @ApiTags('orders')
 @Controller('orders')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+// @UseGuards(AppEnabledGuard)
 export class OrderController {
   constructor(
     private readonly orderService: OrderService,

@@ -33,4 +33,31 @@ export class NotificationService {
     // Отправляем уведомления всем администраторам
     await this.notificationGateway.sendNotificationToClients<T>(adminIds, message);
   }
+
+  async sendBroadcastNotification<T>(message: WsMessage<T>) {
+    // Получаем всех пользователей (только id)
+    const allUsers = await this.userModel.findAll({ attributes: ['id'] });
+  
+    // Получаем всех админов
+    const admins = await this.userModel.findAll({
+      include: [
+        {
+          model: Role,
+          where: { value: 'ADMIN' },
+        },
+      ],
+      attributes: ['id'],
+    });
+  
+    const adminIds = new Set(admins.map((admin) => admin.id));
+  
+    // Исключаем админов из списка
+    const userIds = allUsers
+      .map((user) => user.id)
+      .filter((id) => !adminIds.has(id));
+  
+    // Отправляем сообщение только не-админам
+    await this.notificationGateway.sendNotificationToClients<T>(userIds, message);
+  }
+  
 }

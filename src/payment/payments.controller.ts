@@ -12,11 +12,13 @@ import { CreatePaymentResponseDto } from './dto/create-payment-response.dto';
 import { CapturePaymentDto } from './dto/capture-payment.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PAYMENT_STATUS } from 'src/shared/enums';
+import { AppEnabledGuard } from 'src/shared/guards';
 
 @ApiTags('payments')
 @Controller('payments')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+// @UseGuards(AppEnabledGuard)
 export class PaymentsController {
   constructor(private readonly paymentService: PaymentsService) {}
 
