@@ -2,10 +2,6 @@
 
 set -e
 
-echo "📦 Устанавливаем Nginx..."
-sudo apt-get update
-sudo apt-get install -y nginx
-
 echo ""
 echo "📝 Создаём конфиг для Nginx..."
 sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
@@ -15,31 +11,32 @@ server {
 
     # WebSocket
     location /socket.io/ {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://127.0.0.1:8080;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_cache_bypass \$http_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_cache_bypass $http_upgrade;
     }
 
     # API
     location /api/ {
-        rewrite ^/api/(.*)\$ /\$1 break;
-        proxy_pass http://localhost:8080;
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass http://127.0.0.1:8080;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
     # Статика
     location /uploads/ {
-        root /home/chopp/app-backend/chopp-app-server/;
+        root /home/chopp/app-backend/chopp-app-backend/;
+
         autoindex on;
         access_log off;
         expires max;
@@ -49,7 +46,7 @@ server {
     location / {
         root /var/www/frontend-client;
         index index.html;
-        try_files \$uri /index.html;
+        try_files $uri /index.html;
     }
 }
 
@@ -59,19 +56,20 @@ server {
 
     # Проксируем бэкенд через /api
     location /api/ {
-        rewrite ^/api/(.*)\$ /\$1 break;
-        proxy_pass http://localhost:8080;
+        rewrite ^/api/(.*)$ /$1 break;
+        #proxy_pass http://localhost:6001;
+        proxy_pass http://127.0.0.1:8080;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
     # Раздаём статические файлы (изображения) из папки /uploads
     location /uploads {
-        alias /home/chopp/app-backend/chopp-app-server/;
+        alias /home/chopp/app-backend/chopp-app-backend/;
         autoindex on;
         access_log off;
         expires max;
@@ -80,7 +78,7 @@ server {
     location / {
         root /var/www/frontend-admin;
         index index.html;
-        try_files \$uri /index.html;
+        try_files $uri /index.html;
     }
 }
 EOF
