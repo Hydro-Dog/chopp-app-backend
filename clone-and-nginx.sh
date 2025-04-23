@@ -5,7 +5,7 @@ set -e
 echo "🐘 Клонируем бэкенд в /home/chopp/app-backend..."
 mkdir -p /home/chopp/app-backend
 cd /home/chopp/app-backend
-git clone https://github.com/Unique-Programmer/chopp-app-server.git
+git clone https://github.com/Hydro-Dog/chopp-app-backend.git
 
 echo "🛠️ Клонируем админку в /home/chopp/app-admin..."
 mkdir -p /home/chopp/app-admin
