@@ -14,7 +14,9 @@ async function bootstrap() {
 
   app.enableCors({ origin: '*', allowedHeaders: '*' });
 
-  app.setGlobalPrefix(API_PREFIX);
+  if(process.env.NODE_ENV === 'development') { 
+    app.setGlobalPrefix(API_PREFIX);
+  }
 
   app.use('/uploads', express.static('./uploads'));
 
@@ -34,13 +36,16 @@ app.useGlobalInterceptors(new LoggerInterceptor());
 
   const document = SwaggerModule.createDocument(app, config);
 
-  // раскомментровать при использовании nginx
-  // document.servers = [
-  //   {
-  //     url: '/api', // Теперь все запросы Swagger будут через /api/
-  //     description: 'Base API URL with Nginx proxy',
-  //   },
-  // ];
+  if(process.env.NODE_ENV === 'production') { 
+    // раскомментровать при использовании nginx
+    document.servers = [
+      {
+        url: '/api', // Теперь все запросы Swagger будут через /api/
+        description: 'Base API URL with Nginx proxy',
+      },
+    ];
+  }
+
 
 
   SwaggerModule.setup(`/docs`, app, document);
