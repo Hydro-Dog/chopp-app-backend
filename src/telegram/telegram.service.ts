@@ -173,7 +173,7 @@ export class TelegramService implements OnModuleInit {
 
   private async handleUpdate(update: any): Promise<void> {
     try {
-      this.logger.log('🤖 Received update:', update);
+      this.logger.log('🤖 Received update:', JSON.stringify(update));
       if (update.message?.contact) {
         this.logger.log('🤖 Received contact:', update.message.contact);
         const chatId = update.message.chat.id.toString();
