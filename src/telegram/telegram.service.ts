@@ -25,12 +25,12 @@ export class TelegramService implements OnModuleInit {
     this.apiUrl = `https://api.telegram.org/bot${this.botToken}`;
 
     // 🛠 Создаём кастомный axios instance с отключённым keep-alive
-    const axiosInstance = axios.create({
-      httpAgent: new http.Agent({ keepAlive: false }),
-      httpsAgent: new https.Agent({ keepAlive: false }),
-    });
+    // const axiosInstance = axios.create({
+    //   httpAgent: new http.Agent({ keepAlive: false }),
+    //   httpsAgent: new https.Agent({ keepAlive: false }),
+    // });
 
-    this.httpService = new HttpService(axiosInstance);
+    // this.httpService = new HttpService(axiosInstance);
   }
 
   async onModuleInit() {
