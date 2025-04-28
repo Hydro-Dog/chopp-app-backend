@@ -82,25 +82,32 @@ export class TelegramService implements OnModuleInit {
   }
 
   async sendCode(phoneNumber: string, code: string): Promise<void> {
-    this.logger.log(`🤖 Sending code ${code} to ${phoneNumber}`);
-    const user = await this.usersService.getUserByFieldName(phoneNumber, 'phoneNumber');
-
-    if (!user.telegramUserId) {
-      this.logger.log(`🤖 User ${phoneNumber} not found in Telegram`);
-      const userKey = `verification:${phoneNumber}`;
-      this.codeMap[userKey] = code;
-      this.logger.log('🤖 This user has not logged into the bot yet, we are waiting for him');
-      return;
+    try {
+      this.logger.log(`🤖 Sending code ${code} to ${phoneNumber}`);
+      const user = await this.usersService.getUserByFieldName(phoneNumber, 'phoneNumber');
+  
+      if (!user.telegramUserId) {
+        this.logger.log(`🤖 User ${phoneNumber} not found in Telegram`);
+        const userKey = `verification:${phoneNumber}`;
+        this.codeMap[userKey] = code;
+        this.logger.log('🤖 This user has not logged into the bot yet, we are waiting for him');
+        return;
+      }
+  
+      this.logger.log(`🤖 User ${phoneNumber} found in Telegram`);
+      this.logger.log(`🤖 Sending code ${code} to user ${user.telegramUserId}`);
+      await this.sendMessage(
+        user.telegramUserId,
+        `🔑 <b>Ваш код подтверждения придет следующим сообщением</b>\n\n⏱️ Код действителен в течение 5 минут.\n\n🔒 <i>Никому не сообщайте этот код в целях безопасности.</i>`,
+      );
+  
+      await this.sendMessage(user.telegramUserId, `<code>${code}</code>`);
+    } catch (error) {
+      this.logger.error('Ошибка отправки сообщения в Telegram:', {
+        message: error.message,
+        code: error.code,
+      });
     }
-
-    this.logger.log(`🤖 User ${phoneNumber} found in Telegram`);
-    this.logger.log(`🤖 Sending code ${code} to user ${user.telegramUserId}`);
-    await this.sendMessage(
-      user.telegramUserId,
-      `🔑 <b>Ваш код подтверждения придет следующим сообщением</b>\n\n⏱️ Код действителен в течение 5 минут.\n\n🔒 <i>Никому не сообщайте этот код в целях безопасности.</i>`,
-    );
-
-    await this.sendMessage(user.telegramUserId, `<code>${code}</code>`);
   }
 
   async sendMessage(chatId: string, text: string): Promise<void> {
