@@ -12,52 +12,45 @@ export class NotificationService {
     @InjectModel(User) private readonly userModel: typeof User,
   ) {}
 
+  /**
+   * Отправка уведомления пользователям.
+   * @param recipientUserIds Список ID получателей
+   * @param message Сообщение
+   */
   async sendUserNotification<T>({ recipientUserIds, message }: { recipientUserIds: number[]; message: WsMessage<T>; }) {
     await this.notificationGateway.sendNotificationToClients<T>(recipientUserIds, message);
   }
 
+  /**
+   * Отправка уведомления всем администраторам.
+   * TODO: Можно оптимизировать кэшированием.
+   */
   async sendNotificationToAdmin<T>(message: WsMessage<T>) {
-    // Получаем всех пользователей с ролью ADMIN
-    //TODO: как-то закэшировать получение id админа чтобы каждый раз не ходить в базу
     const admins = await this.userModel.findAll({
-      include: [
-        {
-          model: Role,
-          where: { value: 'ADMIN' }, // Предполагается, что роль администратора — "ADMIN"
-        },
-      ],
+      include: [{ model: Role, where: { value: 'ADMIN' } }],
     });
 
     const adminIds = admins.map((admin) => admin.id);
-
-    // Отправляем уведомления всем администраторам
     await this.notificationGateway.sendNotificationToClients<T>(adminIds, message);
   }
 
+  /**
+   * Отправка широковещательного уведомления всем пользователям, кроме админов.
+   */
   async sendBroadcastNotification<T>(message: WsMessage<T>) {
-    // Получаем всех пользователей (только id)
     const allUsers = await this.userModel.findAll({ attributes: ['id'] });
-  
-    // Получаем всех админов
+
     const admins = await this.userModel.findAll({
-      include: [
-        {
-          model: Role,
-          where: { value: 'ADMIN' },
-        },
-      ],
+      include: [{ model: Role, where: { value: 'ADMIN' } }],
       attributes: ['id'],
     });
-  
+
     const adminIds = new Set(admins.map((admin) => admin.id));
-  
-    // Исключаем админов из списка
+
     const userIds = allUsers
       .map((user) => user.id)
       .filter((id) => !adminIds.has(id));
-  
-    // Отправляем сообщение только не-админам
+
     await this.notificationGateway.sendNotificationToClients<T>(userIds, message);
   }
-  
 }
