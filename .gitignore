@@ -65,4 +65,4 @@ logs.txt
 .env.development
 docker-compose.production.yml
 docker-compose.yml
-Dockerfile.production.yml
+Dockerfile.production
