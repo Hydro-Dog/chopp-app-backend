@@ -4,21 +4,15 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateRefundDto } from 'src/order/dto/create-refund.dto';
 import { GetPaymentResponseDto } from 'src/order/dto/get-payment-response.dto';
 import { GetRefundResponseDto } from 'src/order/dto/get-refund-response.dto';
-import { OrderService } from 'src/order/order.service';
 import { PaymentsService } from './payments.service';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles-auth.guard';
-import { CreatePaymentResponseDto } from './dto/create-payment-response.dto';
 import { CapturePaymentDto } from './dto/capture-payment.dto';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { PAYMENT_STATUS } from 'src/shared/enums';
-import { AppEnabledGuard } from 'src/shared/guards';
 
 @ApiTags('payments')
 @Controller('payments')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-// @UseGuards(AppEnabledGuard)
 export class PaymentsController {
   constructor(private readonly paymentService: PaymentsService) {}
 

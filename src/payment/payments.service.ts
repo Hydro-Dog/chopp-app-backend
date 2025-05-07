@@ -18,7 +18,6 @@ const axios = require('axios');
 const http = require('http');
 const https = require('https');
 
-
 @Injectable()
 export class PaymentsService {
   constructor(
@@ -87,7 +86,7 @@ export class PaymentsService {
       if (method === 'GET' && headers['Content-Type']) {
         delete headers['Content-Type'];
       }
-  
+
       // 🌐 Нормализация query-параметров
       let paramsNormalized: URLSearchParams | undefined = undefined;
       if (params && Object.keys(params).length > 0) {
@@ -100,7 +99,7 @@ export class PaymentsService {
           }
         });
       }
-  
+
       // 🛠️ Сборка конфига
       const config: AxiosRequestConfig = {
         url,
@@ -109,12 +108,12 @@ export class PaymentsService {
         timeout: 5000,
         params: paramsNormalized,
       };
-  
+
       // ✏️ Добавляем тело только если не GET
       if (method !== 'GET' && data !== undefined) {
         config.data = data;
       }
-  
+
       // 🧪 Отладка запроса
       console.log('🌐 Запрос:', {
         url,
@@ -123,21 +122,17 @@ export class PaymentsService {
         params: paramsNormalized?.toString(),
         data: JSON.stringify(config.data),
       });
-  
+
       const response = await this.httpService.request<T>(config).toPromise();
-  
+
       console.log('✅ Ответ:', response.status, response.data);
       return response.data;
     } catch (error) {
       // 🛑 Специальная обработка socket hang up / сетевых ошибок
-      const isSocketError = [
-        'ECONNRESET',
-        'EPIPE',
-        'ETIMEDOUT',
-        'ENOTFOUND',
-        'ECONNREFUSED',
-      ].includes(error.code) || error.message === 'socket hang up';
-  
+      const isSocketError =
+        ['ECONNRESET', 'EPIPE', 'ETIMEDOUT', 'ENOTFOUND', 'ECONNREFUSED'].includes(error.code) ||
+        error.message === 'socket hang up';
+
       if (isSocketError) {
         console.error('❗️Сетевая ошибка при HTTP-запросе:', {
           url,
@@ -145,7 +140,7 @@ export class PaymentsService {
           message: error.message,
           code: error.code,
         });
-  
+
         // Здесь можно сделать retry, лог в телегу, метрику в мониторинг и т.д.
       } else {
         console.error('❌ Ошибка запроса:', {
@@ -156,14 +151,10 @@ export class PaymentsService {
           headers,
         });
       }
-  
-      throw new NotFoundException(
-        error.response?.data || 'Unexpected error occurred',
-      );
+
+      throw new NotFoundException(error.response?.data || 'Unexpected error occurred');
     }
   }
-  
-  
 
   async createPayment({
     amount,
@@ -196,20 +187,22 @@ export class PaymentsService {
 
     const headers = this.createHeaders(this.generateIdempotenceKey());
 
+    const response = await this.makeHttpRequest(`${YOOKASSA_URL}/payments`, 'POST', body, headers);
+
     await this.notificationService.sendNotificationToAdmin({
       type: WS_MESSAGE_TYPE.NEW_PAYMENT,
-      payload: body,
+      payload: response,
     });
 
     await this.notificationService.sendUserNotification({
       recipientUserIds: [user.id],
       message: {
         type: WS_MESSAGE_TYPE.NEW_PAYMENT,
-        payload: body,
+        payload: response,
       },
     });
 
-    return this.makeHttpRequest(`${YOOKASSA_URL}/payments`, 'POST', body, headers);
+    return response;
   }
 
   async payForOrder({ orderId, returnUrl }: { orderId: number; returnUrl: string }): Promise<any> {
