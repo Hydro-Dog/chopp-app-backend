@@ -34,10 +34,14 @@ export class FilesService {
       where: { hash: fileHash },
     });
 
+    console.log('------fileRecord: ', fileRecord)
+
     if (!fileRecord) {
       const fileExtension = path.extname(file.originalname);
       const fileName = uuidv4() + fileExtension;
       const filePath = path.join('./uploads', fileName);
+
+      console.log('------filePath: ', filePath)
 
       await writeFile(filePath, file.buffer);
 
