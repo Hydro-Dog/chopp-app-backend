@@ -75,6 +75,7 @@ export class YooKassaWebhookController {
   }
 
   private async processPaymentSucceeded(transactionId: string): Promise<void> {
+    console.log('----------processPaymentSucceeded', transactionId)
     await this.orderService.updateOrderPaymentStatus({
       transactionId,
       orderStatus: ORDER_STATUS.PAYMENT_SUCCEEDED,
