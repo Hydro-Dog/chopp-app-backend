@@ -11,7 +11,6 @@ module.exports = {
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
         allowNull: false,
         primaryKey: true,
-        defaultValue: 1,
       },
       averageDeliveryCost: Sequelize.FLOAT,
       freeDeliveryIncluded: {
