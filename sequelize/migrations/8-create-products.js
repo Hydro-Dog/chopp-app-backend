@@ -2,9 +2,13 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Подключаем расширение UUID (PostgreSQL only)
+    await queryInterface.sequelize.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
+
     await queryInterface.createTable('products', {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
@@ -26,7 +30,8 @@ module.exports = {
         allowNull: false,
       },
       categoryId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
         allowNull: true,
         references: {
           model: 'categories',
