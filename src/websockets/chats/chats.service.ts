@@ -19,7 +19,7 @@ export class ChatsService {
     @InjectModel(UserChats) private userChatsModel: typeof UserChats,
     private usersService: UsersService,
     private messagesService: MessagesService,
-  ) { }
+  ) {}
 
   // Getting chat history
   async getChatHistory(chatId: number) {
@@ -29,7 +29,7 @@ export class ChatsService {
     });
   }
 
-  /*  
+  /*
       usually, user, which not creator of chat,
       but who can join to chat - is admin,
       but for future extending name of method is joinUserToChat
@@ -46,7 +46,7 @@ export class ChatsService {
     }
   }
 
-  async getChatWithIncludedUsers(userChatId: number) {
+  async getChatWithIncludedUsers(userChatId: string) {
     return await this.chatRepository.findByPk(userChatId, {
       include: [
         {
@@ -59,7 +59,7 @@ export class ChatsService {
     });
   }
 
-  async handleMessage(socket: Socket, activeSessions: ActiveSocket[], message: Message, senderId: number) {
+  async handleMessage(socket: Socket, activeSessions: ActiveSocket[], message: Message, senderId: string) {
     const user = await this.usersService.getUserByFieldName(senderId, 'id');
 
     if (!user) {
@@ -68,7 +68,7 @@ export class ChatsService {
 
     const isAdmin = user.roles.some((role) => role.value === 'ADMIN');
 
-    /* 
+    /*
       "User" role has only 1 chat, "Admin" - several, handler of 3 options:
       1. User is not admin, but sent the message and need create new chat.
       2. Chat already exist and need add message to user's chat if "User" role.
@@ -160,13 +160,7 @@ export class ChatsService {
     return newChat;
   }
 
-  broadcastToActiveRecipients(
-    chat: Chat,
-    user: User,
-    activeSessions: ActiveSocket[],
-    message: Message,
-    socket,
-  ) {
+  broadcastToActiveRecipients(chat: Chat, user: User, activeSessions: ActiveSocket[], message: Message, socket) {
     const activeRecipients = getActiveRecipientsIds(chat, user, activeSessions);
     this.broadcastMessagesToRecipients(activeRecipients, message, socket);
   }
@@ -191,14 +185,15 @@ export class ChatsService {
     });
   }
 
-  async getAllChats(currentUserId: number) {
+  async getAllChats(currentUserId: string) {
     //TODO: change it to search in intermediate table for optimization
     const chats = await this.chatRepository.findAll({
       include: [
         {
           association: 'users',
           attributes: ['id', 'fullName'],
-          through: { // delete throught UserChats table result
+          through: {
+            // delete throught UserChats table result
             attributes: [],
           },
         },
@@ -254,8 +249,8 @@ export class ChatsService {
     });
   }
 
-  async getUserChatStats(userId: number): Promise<ChatStatsDto> {
-    //TODO: clarify how statistics should be displayed, convert to an intermediate table for optimization  
+  async getUserChatStats(userId: string): Promise<ChatStatsDto> {
+    //TODO: clarify how statistics should be displayed, convert to an intermediate table for optimization
     const chatsWithMessages = await this.chatRepository.findAll({
       include: [
         {
@@ -271,8 +266,9 @@ export class ChatsService {
     });
 
     const total = chatsWithMessages.length;
-    const read = chatsWithMessages.filter((chat) => 
-      chat.messages.every((message) => message.wasReadBy.includes(userId)))
+    const read = chatsWithMessages.filter((chat) =>
+      chat.messages.every((message) => message.wasReadBy.includes(userId)),
+    );
     const unread = total - read.length;
 
     return { read: read.length, unread, total };

@@ -4,7 +4,7 @@ import { ORDER_STATUS, PAYMENT_STATUS } from 'src/shared/enums';
 
 export class CreatePaymentResponseDto {
   @ApiProperty({ description: 'ID of the order' })
-  id: number;
+  id: string;
 
   @ApiProperty({ description: 'Total price of the order' })
   totalPrice: number;

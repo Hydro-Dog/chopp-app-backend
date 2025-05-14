@@ -4,12 +4,12 @@ import { Product } from 'src/products/product.model';
 @Table({ tableName: 'categories' })
 export class Category extends Model<Category> {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @Column({
     type: DataType.STRING,

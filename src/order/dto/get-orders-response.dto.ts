@@ -2,16 +2,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ShoppingCartItemDto } from 'src/shopping-cart/dto/shopping-cart-item.dto';
 
 class OrderDto {
-  @ApiProperty({ example: 1, description: 'ID of the order' })
-  id: number;
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'ID of the order' })
+  id: string;
 
-  @ApiProperty({ example: 1, description: 'User ID associated with the order' })
-  userId: number;
+  @ApiProperty({ example: 'uuid', description: 'User ID associated with the order' })
+  userId: string;
 
   @ApiProperty({ type: [ShoppingCartItemDto], description: 'List of items in the order' })
   items: ShoppingCartItemDto[];
 
-  @ApiProperty({ example: 500.00, description: 'Total price of the order' })
+  @ApiProperty({ example: 500.0, description: 'Total price of the order' })
   totalPrice: number;
 
   @ApiProperty({ example: 3, description: 'Total quantity of items in the order' })

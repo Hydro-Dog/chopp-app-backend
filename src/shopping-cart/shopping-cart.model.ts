@@ -5,19 +5,19 @@ import { ShoppingCartItem } from './shopping-cart-item.model';
 @Table({ tableName: 'shopping_carts' })
 export class ShoppingCart extends Model<ShoppingCart> {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  userId: number;
+  userId: string;
 
   @BelongsTo(() => User)
   user: User;
@@ -25,9 +25,9 @@ export class ShoppingCart extends Model<ShoppingCart> {
   @HasMany(() => ShoppingCartItem)
   items: ShoppingCartItem[];
 
-  @Column({type: DataType.FLOAT})
+  @Column({ type: DataType.FLOAT })
   totalPrice: number;
 
-  @Column({type: DataType.FLOAT})
+  @Column({ type: DataType.FLOAT })
   quantity: number;
 }

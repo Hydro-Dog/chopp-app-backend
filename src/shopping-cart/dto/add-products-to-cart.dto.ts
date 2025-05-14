@@ -8,7 +8,7 @@ export class AddProductsToCartDto {
     type: [AddProductToCartDto],
     description: 'Array of products to add to the cart',
     isArray: true,
-    example: [{ productId: 1, quantity: 2 }, { productId: 2, quantity: 3 }]
+    example: [{ productId: 'uuid1', quantity: 2 }, { productId: 'uuid2', quantity: 3 }]
   })
   @IsArray()
   @ValidateNested({ each: true })

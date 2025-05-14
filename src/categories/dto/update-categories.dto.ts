@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString, Min } from 'class-validator';
+import { IsInt, IsString, Min, IsUUID } from 'class-validator';
 
 export class UpdateCategoriesDto {
   @ApiProperty({
     description: 'ID of the category to update',
-    example: 3,
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  @IsInt()
-  id: number;
+  @IsUUID()
+  id: string;
 
   @ApiProperty({
     description: 'New title of the category',

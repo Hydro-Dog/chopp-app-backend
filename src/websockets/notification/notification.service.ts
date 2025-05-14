@@ -17,7 +17,7 @@ export class NotificationService {
    * @param recipientUserIds Список ID получателей
    * @param message Сообщение
    */
-  async sendUserNotification<T>({ recipientUserIds, message }: { recipientUserIds: number[]; message: WsMessage<T>; }) {
+  async sendUserNotification<T>({ recipientUserIds, message }: { recipientUserIds: string[]; message: WsMessage<T> }) {
     await this.notificationGateway.sendNotificationToClients<T>(recipientUserIds, message);
   }
 
@@ -47,9 +47,7 @@ export class NotificationService {
 
     const adminIds = new Set(admins.map((admin) => admin.id));
 
-    const userIds = allUsers
-      .map((user) => user.id)
-      .filter((id) => !adminIds.has(id));
+    const userIds = allUsers.map((user) => user.id).filter((id) => !adminIds.has(id));
 
     await this.notificationGateway.sendNotificationToClients<T>(userIds, message);
   }

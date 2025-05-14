@@ -6,7 +6,7 @@ import { Sequelize, Op } from 'sequelize';
 import { UpdateCategoriesDto } from './dto/update-categories.dto';
 import { Product } from 'src/products/product.model';
 
-const NO_CATEGORY = 'Другое'
+const NO_CATEGORY = 'Другое';
 
 @Injectable()
 export class CategoriesService implements OnModuleInit {
@@ -60,7 +60,7 @@ export class CategoriesService implements OnModuleInit {
     return Promise.all(updatedCategories);
   }
 
-  async updateCategoryTitle(id: number, newTitle: string): Promise<Category> {
+  async updateCategoryTitle(id: string, newTitle: string): Promise<Category> {
     const category = await this.categoryModel.findByPk(id);
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
@@ -84,7 +84,7 @@ export class CategoriesService implements OnModuleInit {
     return category;
   }
 
-  async deleteCategory(id: number): Promise<Category[]> {
+  async deleteCategory(id: string): Promise<Category[]> {
     const categoryToDelete = await this.categoryModel.findByPk(id, { include: [Product] });
 
     if (!categoryToDelete) {

@@ -8,12 +8,12 @@ export class ClientAppConfig extends Model<ClientAppConfig> {
     description: 'The unique identifier for the client app configuration',
   })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
     primaryKey: true,
-    defaultValue: 1,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     example: '20.00',

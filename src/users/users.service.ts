@@ -206,7 +206,7 @@ export class UsersService {
     });
   }
 
-  private async isFieldTakenByAnotherUser(value: string, fieldName: string, currentUserId: number): Promise<boolean> {
+  private async isFieldTakenByAnotherUser(value: string, fieldName: string, currentUserId: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
       where: {
         [fieldName]: value,

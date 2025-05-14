@@ -6,12 +6,12 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 })
 export class OrderStats extends Model {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
-    autoIncrement: true,
     primaryKey: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @Column({
     type: DataType.DATEONLY,

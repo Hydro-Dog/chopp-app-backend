@@ -1,24 +1,16 @@
-import {
-  Column,
-  Model,
-  Table,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-  BelongsToMany,
-} from 'sequelize-typescript';
+import { Column, Model, Table, DataType, ForeignKey, BelongsTo, BelongsToMany } from 'sequelize-typescript';
 import { ProductFile } from 'src/products/product-file.model';
 import { Product } from 'src/products/product.model';
 
 @Table({ tableName: 'files' })
 export class FileModel extends Model<FileModel> {
   @Column({
-    type: DataType.INTEGER,
-    autoIncrement: true,
+    type: DataType.UUID,
     primaryKey: true,
     allowNull: false,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @Column({
     type: DataType.STRING,

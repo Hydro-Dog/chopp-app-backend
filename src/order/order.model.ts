@@ -1,12 +1,4 @@
-import {
-  Column,
-  Model,
-  Table,
-  ForeignKey,
-  DataType,
-  BelongsTo,
-  HasMany,
-} from 'sequelize-typescript';
+import { Column, Model, Table, ForeignKey, DataType, BelongsTo, HasMany } from 'sequelize-typescript';
 import { ShoppingCartItem } from 'src/shopping-cart/shopping-cart-item.model';
 import { User } from 'src/users/users.model';
 import { OrderItem } from './order-item.model';
@@ -15,19 +7,19 @@ import { ORDER_STATUS, PAYMENT_STATUS } from 'src/shared/enums';
 @Table({ tableName: 'orders' })
 export class Order extends Model<Order> {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  userId: number;
+  userId: string;
 
   @BelongsTo(() => User)
   user: User;
@@ -50,7 +42,7 @@ export class Order extends Model<Order> {
   @Column({ type: DataType.TEXT })
   transactionId: string;
 
-  //TODO: удалить, paymentUrl здесь не нужен, можно взять из payments? 
+  //TODO: удалить, paymentUrl здесь не нужен, можно взять из payments?
   @Column({ type: DataType.TEXT })
   paymentUrl: string;
 

@@ -5,27 +5,27 @@ import { Product } from 'src/products/product.model';
 @Table({ tableName: 'order_items' })
 export class OrderItem extends Model<OrderItem> {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => Order)
-  @Column({ type: DataType.INTEGER })
-  orderId: number;
+  @Column({ type: DataType.UUID })
+  orderId: string;
 
   @BelongsTo(() => Order)
   order: Order;
 
   @ForeignKey(() => Product)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: true, // Разрешаем NULL
     onDelete: 'SET NULL', // Устанавливаем NULL при удалении продукта
   })
-  productId: number | null;
+  productId: string | null;
 
   @BelongsTo(() => Product)
   product: Product;

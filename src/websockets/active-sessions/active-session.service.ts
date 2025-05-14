@@ -6,21 +6,21 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ActiveSessionService {
-    private readonly logger = new Logger(ActiveSessionService.name);
-    
+  private readonly logger = new Logger(ActiveSessionService.name);
+
   constructor(
     @InjectModel(ActiveSession)
     private readonly activeSessionModel: typeof ActiveSession,
   ) {}
 
   // Добавление или обновление активной сессии
-  async upsertSession(userId: number, sid: string): Promise<void> {
+  async upsertSession(userId: string, sid: string): Promise<void> {
     await this.activeSessionModel.upsert({ userId, sid });
   }
 
   // Удаление активной сессии
   async removeSession(sid: string): Promise<void> {
-    console.log('--removeSession: ', sid)
+    console.log('--removeSession: ', sid);
     await this.activeSessionModel.destroy({ where: { sid } });
   }
 
@@ -30,12 +30,12 @@ export class ActiveSessionService {
   }
 
   // Получение активной сессии по userId
-  async getSessionByUserId(userId: number): Promise<ActiveSession | null> {
+  async getSessionByUserId(userId: string): Promise<ActiveSession | null> {
     return this.activeSessionModel.findOne({ where: { userId } });
   }
 
   // Получение активных сессий по userIds[]
-  async getSessionsByUserIds(userIds: number[]): Promise<ActiveSession[]> {
+  async getSessionsByUserIds(userIds: string[]): Promise<ActiveSession[]> {
     return await this.activeSessionModel.findAll({
       where: {
         userId: {
@@ -52,7 +52,7 @@ export class ActiveSessionService {
         connectedAt: { [Op.lt]: expirationTime },
       },
     });
-  }  
+  }
 
   @Cron(CronExpression.EVERY_HOUR) // Используем стандартное выражение
   async handleCleanStaleSessionsCron() {

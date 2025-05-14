@@ -64,7 +64,7 @@ export class ProductService {
     return this.getProductById(existingProduct.id);
   }
 
-  async getProductById(productId: number): Promise<Product> {
+  async getProductById(productId: string): Promise<Product> {
     return this.productRepository.findByPk(productId, {
       include: [
         {
@@ -132,7 +132,7 @@ export class ProductService {
     });
   }
 
-  async updateProductState(productId: number, state: PRODUCT_STATE): Promise<Product> {
+  async updateProductState(productId: string, state: PRODUCT_STATE): Promise<Product> {
     const product = await this.productRepository.findByPk(productId);
 
     if (!product) {

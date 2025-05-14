@@ -1,13 +1,4 @@
-import {
-  Column,
-  Model,
-  Table,
-  DataType,
-  BelongsTo,
-  ForeignKey,
-  HasMany,
-  BelongsToMany,
-} from 'sequelize-typescript';
+import { Column, Model, Table, DataType, BelongsTo, ForeignKey, HasMany, BelongsToMany } from 'sequelize-typescript';
 import { Category } from 'src/categories/category.model';
 import { FileModel } from 'src/files/file.model';
 import { ProductFile } from './product-file.model';
@@ -17,12 +8,12 @@ import { PRODUCT_STATE } from 'src/shared/enums';
 @Table({ tableName: 'products' })
 export class Product extends Model<Product> {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @Column({
     type: DataType.TEXT,
@@ -52,15 +43,17 @@ export class Product extends Model<Product> {
   category: Category;
 
   @ForeignKey(() => Category)
-  @Column
-  categoryId: number;
+  @Column({
+    type: DataType.UUID,
+  })
+  categoryId: string;
 
   @BelongsToMany(() => FileModel, () => ProductFile)
   images: FileModel[];
 
-  @Column({ type: DataType.ARRAY(DataType.INTEGER) })
+  @Column({ type: DataType.ARRAY(DataType.UUID) })
   imagesOrder: FileModel['id'][];
 
   @HasMany(() => ShoppingCartItem)
-  items: ShoppingCartItem[]
+  items: ShoppingCartItem[];
 }

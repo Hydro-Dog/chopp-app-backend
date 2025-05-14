@@ -1,10 +1,4 @@
-import {
-  Column,
-  Model,
-  Table,
-  DataType,
-  ForeignKey,
-} from 'sequelize-typescript';
+import { Column, Model, Table, DataType, ForeignKey } from 'sequelize-typescript';
 import { FileModel } from 'src/files/file.model';
 import { Product } from './product.model';
 import { ApiProperty } from '@nestjs/swagger';
@@ -15,27 +9,27 @@ import { ApiProperty } from '@nestjs/swagger';
   updatedAt: false,
 })
 export class ProductFile extends Model<ProductFile> {
-  @ApiProperty({ example: '1', description: 'primary key id' })
+  @ApiProperty({ example: 'uuid', description: 'primary key id' })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     unique: true,
-    autoIncrement: true,
     primaryKey: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => Product)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: true, // Разрешаем NULL
     onDelete: 'SET NULL', // Устанавливаем NULL при удалении продукта
   })
-  productId: number | null;
+  productId: string | null;
 
   @ForeignKey(() => FileModel)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  fileId: number;
+  fileId: string;
 }

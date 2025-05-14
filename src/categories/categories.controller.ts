@@ -56,7 +56,7 @@ export class CategoriesController {
     type: [Category],
   })
   @UseGuards(JwtAuthGuard)
-  async deleteCategory(@Param('id', ParseIntPipe) id: number): Promise<Category[]> {
+  async deleteCategory(@Param('id', ParseIntPipe) id: string): Promise<Category[]> {
     return this.categoriesService.deleteCategory(id);
   }
 
@@ -69,7 +69,7 @@ export class CategoriesController {
   })
   @UseGuards(JwtAuthGuard)
   async updateCategoryTitle(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: string,
     @Body() { title }: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoriesService.updateCategoryTitle(id, title);

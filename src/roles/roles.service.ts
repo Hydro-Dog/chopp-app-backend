@@ -1,11 +1,5 @@
 // src/roles/roles.service.ts
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from './roles.model';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -19,17 +13,16 @@ export class RolesService implements OnModuleInit {
   async onModuleInit() {
     if (process.env.NODE_ENV !== 'development') return;
 
-    await this.ensureRole(1, 'ADMIN', 'Роль администратора');
-    await this.ensureRole(2, 'USER', 'Роль пользвоателя');
+    await this.ensureRole('b7e8a7b2-2c3e-4e1a-9a1b-1f2e3d4c5b6a', 'ADMIN', 'Роль администратора');
+    await this.ensureRole('c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f', 'USER', 'Роль пользвоателя');
   }
 
-  private async ensureRole(id: number, value: string, description: string) {
+  private async ensureRole(id: string, value: string, description: string) {
     const role = await this.roleRepository.findByPk(id);
 
     if (role?.value === value && role?.id !== id) {
       this.logger.error(
-        `❌ Конфликт: роль '${value}' уже существует но с другим ID (${role.id}). ` +
-          `Ожидаемый ID: ${id}.`,
+        `❌ Конфликт: роль '${value}' уже существует но с другим ID (${role.id}). ` + `Ожидаемый ID: ${id}.`,
       );
       return;
     }

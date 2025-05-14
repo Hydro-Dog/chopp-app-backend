@@ -48,7 +48,7 @@ export class CreateUserDto {
 }
 
 export class UserRO {
-  id: number;
+  id: string;
   email?: string;
   fullName?: string;
   phoneNumber?: string;

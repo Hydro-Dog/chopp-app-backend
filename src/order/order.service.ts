@@ -33,14 +33,14 @@ export class OrderService {
     private readonly notificationService: NotificationService,
   ) {}
 
-  private async findLastOrderRaw(userId: number): Promise<Order | null> {
+  private async findLastOrderRaw(userId: string): Promise<Order | null> {
     return this.orderModel.findOne({
       where: { userId },
       order: [['createdAt', 'DESC']],
     });
   }
 
-  private async getCart(userId: number, transaction: any): Promise<ShoppingCart> {
+  private async getCart(userId: string, transaction: any): Promise<ShoppingCart> {
     const cart = await this.shoppingCartModel.findOne({
       where: { userId },
       include: [{ model: ShoppingCartItem, include: [{ model: Product }] }],
@@ -54,7 +54,7 @@ export class OrderService {
     return cart;
   }
 
-  private async createOrderItems(orderId: number, items: ShoppingCartItem[], transaction: any): Promise<void> {
+  private async createOrderItems(orderId: string, items: ShoppingCartItem[], transaction: any): Promise<void> {
     for (const item of items) {
       await this.orderItemModel.create(
         {
@@ -75,7 +75,7 @@ export class OrderService {
     address,
     phoneNumber,
     name,
-  }: { userId: number } & CreateOrderDTO): Promise<CreatePaymentResponseDto> {
+  }: { userId: string } & CreateOrderDTO): Promise<CreatePaymentResponseDto> {
     const transaction = await this.orderModel.sequelize.transaction();
 
     try {

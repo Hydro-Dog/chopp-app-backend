@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Min, IsArray, IsInt, IsBoolean } from 'class-validator';
+import { IsNumber, IsString, Min, IsArray, IsInt, IsBoolean, IsUUID } from 'class-validator';
 import { PRODUCT_STATE } from 'src/shared/enums';
 
 export class UpdateProductDto {
   @ApiProperty({
     description: 'ID of the product to update',
-    example: 3,
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  @IsInt()
-  id: number;
+  @IsUUID()
+  id: string;
 
   @ApiProperty({
     description: 'Product title',
@@ -33,29 +33,29 @@ export class UpdateProductDto {
   price: number;
 
   @ApiProperty({
-      description: 'Product state',
-      example: 'hidden',
-    })
-    @IsString()
-    state: PRODUCT_STATE;
+    description: 'Product state',
+    example: 'hidden',
+  })
+  @IsString()
+  state: PRODUCT_STATE;
 
   @ApiProperty({
     description: 'Product category',
-    example: 1,
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  @IsNumber()
-  categoryId: number;
+  @IsUUID()
+  categoryId: string;
 
   @ApiProperty({
     description: 'IDs of product images',
     type: 'array',
     items: {
       type: 'number',
-      example: 1,
+      example: 'uuid',
     },
   })
   @IsArray()
-  imageIds: number[];
+  imageIds: string[];
 
   @ApiProperty({
     description: 'Product images',
