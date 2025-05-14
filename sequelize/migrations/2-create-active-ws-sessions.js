@@ -5,9 +5,6 @@ module.exports = {
     // Подключаем расширение UUID (PostgreSQL only)
     await queryInterface.sequelize.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 
-    // Подключаем расширение UUID (PostgreSQL only)
-    await queryInterface.sequelize.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
-
     await queryInterface.createTable('active_ws_sessions', {
       userId: {
         type: Sequelize.UUID,
