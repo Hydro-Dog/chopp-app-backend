@@ -1,4 +1,4 @@
-import { Injectable, HttpException, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, NotFoundException, forwardRef, Inject } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { randomBytes } from 'crypto';
 import { YOOKASSA_URL } from './constants';
@@ -11,9 +11,10 @@ import { Order } from 'src/order/order.model';
 import { OrderItem } from 'src/order/order-item.model';
 import { YooKassaWebhookService } from './yookassa-webhook.service';
 import { NotificationService } from 'src/websockets/notification/notification.service';
-import { PAYMENT_STATUS, WS_MESSAGE_TYPE } from 'src/shared/enums/';
+import { ORDER_STATUS, PAYMENT_STATUS, WS_MESSAGE_TYPE } from 'src/shared/enums/';
 import { User } from 'src/users/users.model';
 import { AxiosRequestConfig } from 'axios';
+import { OrderService } from 'src/order/order.service';
 const axios = require('axios');
 const http = require('http');
 const https = require('https');
@@ -25,6 +26,8 @@ export class PaymentsService {
     private readonly httpService: HttpService,
     private readonly subscriptionService: YooKassaWebhookService,
     private readonly notificationService: NotificationService,
+    @Inject(forwardRef(() => OrderService))
+    private readonly orderService: OrderService,
   ) {
     const axiosInstance = axios.create({
       httpAgent: new http.Agent({ keepAlive: false }),
@@ -256,7 +259,6 @@ export class PaymentsService {
 
   async getPayments(params: Record<string, any>): Promise<any> {
     const headers = this.createHeaders(String(Math.round(Math.random() * 1000000)));
-    console.log('--- 2 headers: ', headers);
     return this.makeHttpRequest(`${YOOKASSA_URL}/payments`, 'GET', null, headers, params);
   }
 
@@ -277,7 +279,14 @@ export class PaymentsService {
 
   async createRefund(refundData: CreateRefundDto): Promise<any> {
     const headers = this.createHeaders(this.generateIdempotenceKey());
-    return this.makeHttpRequest(`${YOOKASSA_URL}/refunds`, 'POST', refundData, headers);
+
+    try {
+      await this.makeHttpRequest(`${YOOKASSA_URL}/refunds`, 'POST', refundData, headers);
+      await this.orderService.updateOrderOrPaymentStatus({
+        transactionId: refundData.payment_id,
+        orderStatus: ORDER_STATUS.REFUNDED,
+      });
+    } catch (error) {}
   }
 
   async getRefunds(params: Record<string, any>): Promise<any> {

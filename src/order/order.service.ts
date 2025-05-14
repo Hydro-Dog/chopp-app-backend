@@ -346,7 +346,7 @@ export class OrderService {
     return order;
   }
 
-  async updateOrderPaymentStatus({
+  async updateOrderOrPaymentStatus({
     transactionId,
     orderStatus,
     paymentStatus,

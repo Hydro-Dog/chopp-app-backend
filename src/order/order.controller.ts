@@ -79,7 +79,7 @@ export class OrderController {
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   async updatePaymentStatus(@Body() updateDto: UpdatePaymentStatusDto): Promise<Order> {
-    return this.orderService.updateOrderPaymentStatus(updateDto);
+    return this.orderService.updateOrderOrPaymentStatus(updateDto);
   }
 
   @Get('/lastOrder')
