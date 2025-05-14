@@ -6,7 +6,7 @@ module.exports = {
       'client_app_config',
       [
         {
-          id: Sequelize.literal('uuid_generate_v4()'),,
+          id: Sequelize.literal('uuid_generate_v4()'),
           freeDeliveryIncluded: false,
           createdAt: new Date(),
           updatedAt: new Date(),
