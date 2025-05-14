@@ -6,14 +6,14 @@ module.exports = {
       'roles',
       [
         {
-          id: 1,
+          id: Sequelize.literal('uuid_generate_v4()'),
           value: 'ADMIN',
           description: 'Роль администратора',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id: 2,
+          id: Sequelize.literal('uuid_generate_v4()'),
           value: 'USER',
           description: 'Роль пользователя',
           createdAt: new Date(),

@@ -6,7 +6,7 @@ module.exports = {
       'client_app_config',
       [
         {
-          id: 1,
+          id: Sequelize.literal('uuid_generate_v4()'),,
           freeDeliveryIncluded: false,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -17,6 +17,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('client_app_config', { id: 1 });
+    await queryInterface.bulkDelete('client_app_config', { id: Sequelize.literal('uuid_generate_v4()'), });
   },
 };
