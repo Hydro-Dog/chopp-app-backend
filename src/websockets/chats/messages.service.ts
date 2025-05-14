@@ -11,7 +11,7 @@ export class MessagesService {
     private messageRepository: typeof Message,
   ) {}
 
-  async createMessage(message: Message, userId: number) {
+  async createMessage(message: Message, userId: string) {
     const { text = '' } = message;
 
     const newMessage = await this.messageRepository.create({ text, senderId: userId });
@@ -21,7 +21,7 @@ export class MessagesService {
     return newMessage;
   }
 
-  async getAllChatMessages(chatId: number) {
+  async getAllChatMessages(chatId: string) {
     return await this.messageRepository.findAll({
       where: { chatId },
       include: { all: true },
@@ -32,15 +32,15 @@ export class MessagesService {
   async markAllMessagesAsRead(chatId: number, userId: number) {
     await this.messageRepository.update(
       {
-        wasReadBy: Sequelize.literal(`ARRAY_APPEND("wasReadBy", ${userId})`)
+        wasReadBy: Sequelize.literal(`ARRAY_APPEND("wasReadBy", ${userId})`),
       },
       {
-        where: Sequelize.literal(`"chatId" = ${chatId} AND NOT (${userId} = ANY("wasReadBy"))`)
-      }
+        where: Sequelize.literal(`"chatId" = ${chatId} AND NOT (${userId} = ANY("wasReadBy"))`),
+      },
     );
   }
 
-  async markMessageAsRead(messageId: number, userId: number): Promise<Message> {
+  async markMessageAsRead(messageId: string, userId: string): Promise<Message> {
     const message = await this.messageRepository.findByPk(messageId);
     if (!message) {
       throw new NotFoundException('Message not found');

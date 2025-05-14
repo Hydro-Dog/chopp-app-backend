@@ -205,7 +205,7 @@ export class PaymentsService {
     return response;
   }
 
-  async payForOrder({ orderId, returnUrl }: { orderId: number; returnUrl: string }): Promise<any> {
+  async payForOrder({ orderId, returnUrl }: { orderId: string; returnUrl: string }): Promise<any> {
     const order = await this.orderModel.findOne({
       where: { id: orderId },
       include: [

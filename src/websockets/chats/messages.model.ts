@@ -1,10 +1,4 @@
-import {
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { User } from 'src/users/users.model';
 import { Chat } from './chats.model';
 import { ApiProperty } from '@nestjs/swagger';
@@ -12,27 +6,27 @@ import { ApiProperty } from '@nestjs/swagger';
 @Table({ tableName: 'messages' })
 export class Message extends Model {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     unique: true,
-    autoIncrement: true,
     primaryKey: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ApiProperty({ example: 'Hello! How are you?', description: 'Text of the message' })
   @Column({ type: DataType.STRING, allowNull: false })
   text: string;
 
   @ApiProperty({ example: '[1, 2, 3]', description: 'Array of user IDs who read the message' })
-  @Column({ type: DataType.ARRAY(DataType.INTEGER), allowNull: false, defaultValue: [] })
-  wasReadBy: number[];
+  @Column({ type: DataType.ARRAY(DataType.UUID), allowNull: false, defaultValue: [] })
+  wasReadBy: string[];
 
   @ForeignKey(() => User)
-  @Column({ allowNull: true })
-  senderId: number;
+  @Column({ allowNull: true, type: DataType.UUID })
+  senderId: string;
 
   @ForeignKey(() => Chat)
-  @Column({ allowNull: true })
+  @Column({ allowNull: true, type: DataType.UUID })
   @Column
-  chatId: number;
+  chatId: string;
 }

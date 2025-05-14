@@ -74,7 +74,7 @@ export class TelegramService implements OnModuleInit {
           code: error.code,
         });
       } finally {
-        // setTimeout(poll, 1000);
+        setTimeout(poll, 1000);
       }
     };
 

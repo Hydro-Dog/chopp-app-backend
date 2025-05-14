@@ -8,7 +8,7 @@ import { WS_MESSAGE_TYPE } from 'src/shared/enums';
 @Injectable()
 export class ClientAppConfigService implements OnModuleInit {
   private readonly logger = new Logger(ClientAppConfigService.name);
-
+  private readonly DEFAULT_CONFIG_ID = 'f7e1a2b3-c4d5-6789-0123-abcdefabcdef';
   constructor(
     @InjectModel(ClientAppConfig)
     private clientAppModel: typeof ClientAppConfig,
@@ -18,22 +18,20 @@ export class ClientAppConfigService implements OnModuleInit {
   async onModuleInit() {
     if (process.env.NODE_ENV !== 'development') return;
 
-    const existingConfig = await this.clientAppModel.findByPk(1);
+    const existingConfig = await this.clientAppModel.findByPk(this.DEFAULT_CONFIG_ID);
     if (!existingConfig) {
-      await this.clientAppModel.create({ id: 1, freeDeliveryIncluded: false });
+      await this.clientAppModel.create({ id: this.DEFAULT_CONFIG_ID, freeDeliveryIncluded: false });
 
       this.logger.log('🚀 Создан пустой CLEAN APP конфиг');
     }
   }
 
-  async createOrUpdateConfig(
-    dto: CreateClientAppConfigDto,
-  ): Promise<ClientAppConfig> {
-    const config = await this.clientAppModel.findByPk(1);
+  async createOrUpdateConfig(dto: CreateClientAppConfigDto): Promise<ClientAppConfig> {
+    const config = await this.clientAppModel.findByPk(this.DEFAULT_CONFIG_ID);
     if (config) {
-      console.log('-------UPDATE', typeof dto.disabled, dto.disabled)
-      if(typeof dto.disabled === 'boolean') {
-        console.log('-------BROADCST')
+      console.log('-------UPDATE', typeof dto.disabled, dto.disabled);
+      if (typeof dto.disabled === 'boolean') {
+        console.log('-------BROADCST');
         await this.notificationService.sendBroadcastNotification({
           type: WS_MESSAGE_TYPE.CLIENT_APP_CONFIG_STATUS,
           payload: {
@@ -44,11 +42,11 @@ export class ClientAppConfigService implements OnModuleInit {
       return config.update(dto);
     } else {
       // Поскольку у нас всегда должен быть id=1, создаем напрямую с этим id
-      return this.clientAppModel.create({ ...dto, id: 1 });
+      return this.clientAppModel.create({ ...dto });
     }
   }
 
   async getConfig(): Promise<ClientAppConfig> {
-    return this.clientAppModel.findByPk(1);
+    return this.clientAppModel.findByPk(this.DEFAULT_CONFIG_ID);
   }
 }

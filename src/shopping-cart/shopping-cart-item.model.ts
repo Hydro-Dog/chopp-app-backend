@@ -1,11 +1,4 @@
-import {
-  Column,
-  Model,
-  Table,
-  ForeignKey,
-  DataType,
-  BelongsTo,
-} from 'sequelize-typescript';
+import { Column, Model, Table, ForeignKey, DataType, BelongsTo } from 'sequelize-typescript';
 import { ShoppingCart } from './shopping-cart.model';
 import { Product } from 'src/products/product.model';
 import { Order } from 'src/order/order.model';
@@ -13,36 +6,36 @@ import { Order } from 'src/order/order.model';
 @Table({ tableName: 'shopping_cart_items' })
 export class ShoppingCartItem extends Model<ShoppingCartItem> {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => Product)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: true, // Разрешаем NULL
     onDelete: 'SET NULL', // Устанавливаем NULL при удалении продукта
   })
-  productId: number | null;
+  productId: string | null;
 
   @BelongsTo(() => Product)
   product: Product;
 
   @ForeignKey(() => ShoppingCart)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
   })
-  shoppingCartId: number;
+  shoppingCartId: string;
 
   @BelongsTo(() => ShoppingCart)
   shoppingCart: ShoppingCart;
 
   @ForeignKey(() => Order)
-  @Column({ type: DataType.INTEGER })
-  orderId: number;
+  @Column({ type: DataType.UUID })
+  orderId: string;
 
   @BelongsTo(() => Order)
   order: Order;

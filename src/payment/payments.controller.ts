@@ -37,7 +37,7 @@ export class PaymentsController {
       required: ['returnUrl'],
     },
   })
-  async payForOrder(@Param('orderId') orderId: number, @Body() { returnUrl }: { returnUrl: string }): Promise<any> {
+  async payForOrder(@Param('orderId') orderId: string, @Body() { returnUrl }: { returnUrl: string }): Promise<any> {
     return this.paymentService.payForOrder({ orderId, returnUrl });
   }
 

@@ -4,7 +4,6 @@ import { Subscription } from './subscription.model';
 import { NotificationService } from 'src/websockets/notification/notification.service';
 import { SUBSCRIPTION_STATUS } from './constants';
 
-
 @Injectable()
 export class YooKassaWebhookService {
   constructor(
@@ -16,11 +15,7 @@ export class YooKassaWebhookService {
    * Создание новой подписки.
    * @param data Данные подписки
    */
-  async createSubscription(data: {
-    transactionId: string;
-    orderId: number;
-    status?: string;
-  }): Promise<Subscription> {
+  async createSubscription(data: { transactionId: string; orderId: string; status?: string }): Promise<Subscription> {
     return this.subscriptionModel.create(data);
   }
 

@@ -20,7 +20,16 @@ import { FilesService } from '../files/files.service';
 import { ProductService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PRODUCT_STATE } from 'src/shared/enums';
 import { Product } from './product.model';
@@ -66,12 +75,12 @@ export class ProductsController {
   async updateProduct(
     @UploadedFiles() files: { images?: Express.Multer.File[] },
     @Body() productData: UpdateProductDto,
-    @Param('id') id: number,
+    @Param('id') id: string,
   ) {
     try {
       const imageModels = await Promise.all(files.images?.map((file) => this.filesService.uploadFile(file)) || []);
 
-      let remainingOldImagesParsed: { id: number; hash: string }[] = [];
+      let remainingOldImagesParsed: { id: string; hash: string }[] = [];
       let remainingOldImagesHashSet = new Set<string>();
 
       if (productData.remainingOldImages) {
@@ -129,29 +138,29 @@ export class ProductsController {
   }
 
   @Get(':id')
-@ApiOperation({ summary: 'Get product by ID' })
-@ApiParam({
-  name: 'id',
-  type: Number,
-  description: 'Unique identifier of the product',
-  example: 42,
-})
-@ApiResponse({
-  status: 200,
-  description: 'Product successfully retrieved',
-  type: Product, // укажи правильный DTO, который возвращается
-})
-@ApiResponse({
-  status: 404,
-  description: 'Product not found',
-})
-async getProductById(@Param('id') id: number) {
-  const product = await this.productService.findProductById(Number(id));
-  if (!product) {
-    throw new NotFoundException(`Product with ID ${id} not found`);
+  @ApiOperation({ summary: 'Get product by ID' })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'Unique identifier of the product',
+    example: 42,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Product successfully retrieved',
+    type: Product, // укажи правильный DTO, который возвращается
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Product not found',
+  })
+  async getProductById(@Param('id') id: number) {
+    const product = await this.productService.findProductById(Number(id));
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+    return product;
   }
-  return product;
-}
 
   @Patch(':id/state')
   @ApiBody({
@@ -160,7 +169,7 @@ async getProductById(@Param('id') id: number) {
   })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async updateProductState(@Param('id') id: number, @Body('state') state: PRODUCT_STATE) {
+  async updateProductState(@Param('id') id: string, @Body('state') state: PRODUCT_STATE) {
     return this.productService.updateProductState(id, state);
   }
 

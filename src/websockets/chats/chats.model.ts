@@ -1,11 +1,4 @@
-import {
-  BelongsToMany,
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+import { BelongsToMany, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { User } from 'src/users/users.model';
 import { UserChats } from './user-chats.model';
 import { Message } from './messages.model';
@@ -15,17 +8,17 @@ import { ApiProperty } from '@nestjs/swagger';
 @Table({ tableName: 'chats' })
 export class Chat extends Model {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     unique: true,
-    autoIncrement: true,
     primaryKey: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => User)
   @ApiProperty({ example: 'uuid', description: 'owner id - foreign key' })
-  @Column({ allowNull: true })
-  ownerId: number;
+  @Column({ allowNull: true, type: DataType.UUID })
+  ownerId: string;
 
   @BelongsToMany(() => Message, () => ChatMessages)
   messages: Message[];

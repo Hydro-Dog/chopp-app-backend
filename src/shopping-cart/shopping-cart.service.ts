@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from 'src/products/product.model';
 import { User } from 'src/users/users.model';
@@ -28,15 +23,11 @@ export class ShoppingCartService implements OnModuleInit {
     if (process.env.NODE_ENV !== 'development') return;
 
     const users = await this.userModel.findAll();
-    const cartUserIds = (
-      await this.shoppingCartModel.findAll({ attributes: ['userId'] })
-    )
+    const cartUserIds = (await this.shoppingCartModel.findAll({ attributes: ['userId'] }))
       .map((cart) => cart.userId)
       .filter((userId) => userId != null);
 
-    const usersWithoutCart = users.filter(
-      (user) => !cartUserIds.includes(user.id),
-    );
+    const usersWithoutCart = users.filter((user) => !cartUserIds.includes(user.id));
 
     for (const user of usersWithoutCart) {
       await this.shoppingCartModel.create({
@@ -48,9 +39,7 @@ export class ShoppingCartService implements OnModuleInit {
     }
 
     if (usersWithoutCart.length > 0) {
-      this.logger.log(
-        `✅ Added shopping carts for ${usersWithoutCart.length} users.`,
-      );
+      this.logger.log(`✅ Added shopping carts for ${usersWithoutCart.length} users.`);
     } else {
       this.logger.log(`✅ All users already have shopping carts.`);
     }
@@ -71,14 +60,14 @@ export class ShoppingCartService implements OnModuleInit {
         },
       ],
     });
-  
+
     if (!cart) {
       throw new NotFoundException('Shopping cart not found');
     }
-  
+
     // Преобразуем данные в JSON, чтобы избежать циклических ссылок
     const plainCart = cart.toJSON();
-  
+
     const items = plainCart.items.map((item) => ({
       product: {
         ...item?.product,
@@ -87,14 +76,13 @@ export class ShoppingCartService implements OnModuleInit {
       quantity: item.quantity,
       totalPrice: item.quantity * item.product?.price,
     }));
-  
+
     return { items, totalPrice: plainCart.totalPrice, quantity: plainCart.quantity };
   }
-  
-  
+
   async addProductsToCart(
-    userId: number,
-    items: { productId: number; quantity: number }[],
+    userId: string,
+    items: { productId: string; quantity: number }[],
   ): Promise<{ items: any[]; totalPrice: number; quantity: number }> {
     const transaction = await this.shoppingCartModel.sequelize.transaction();
     try {
@@ -102,7 +90,7 @@ export class ShoppingCartService implements OnModuleInit {
         where: { userId },
         transaction,
       });
-  
+
       if (!cart) {
         cart = await this.shoppingCartModel.create(
           {
@@ -113,17 +101,17 @@ export class ShoppingCartService implements OnModuleInit {
           { transaction },
         );
       }
-  
+
       // Удаляем старые элементы корзины
       await this.shoppingCartItemModel.destroy({
         where: { shoppingCartId: cart.id },
         transaction,
       });
-  
+
       let detailedItems = [];
       let totalPrice = 0;
       let totalQuantity = 0;
-  
+
       // Добавляем новые элементы в корзину
       for (const item of items) {
         const product = await this.productModel.findByPk(item.productId, {
@@ -133,7 +121,7 @@ export class ShoppingCartService implements OnModuleInit {
         if (!product) {
           throw new NotFoundException(`Product with ID ${item.productId} not found`);
         }
-  
+
         const newItem = await this.shoppingCartItemModel.create(
           {
             productId: item.productId,
@@ -142,11 +130,11 @@ export class ShoppingCartService implements OnModuleInit {
           },
           { transaction },
         );
-  
+
         const itemTotalPrice = newItem.quantity * product.price;
         totalPrice += itemTotalPrice;
         totalQuantity += newItem.quantity;
-  
+
         detailedItems.push({
           product: {
             ...product?.toJSON(),
@@ -156,14 +144,14 @@ export class ShoppingCartService implements OnModuleInit {
           totalPrice: itemTotalPrice,
         });
       }
-  
+
       // Обновляем корзину с пересчитанными значениями
       cart.totalPrice = totalPrice;
       cart.quantity = totalQuantity;
       await cart.save({ transaction });
-  
+
       await transaction.commit();
-  
+
       return {
         items: detailedItems,
         totalPrice: cart.totalPrice,
@@ -174,10 +162,6 @@ export class ShoppingCartService implements OnModuleInit {
       throw error;
     }
   }
-  
-  
-  
-
 
   async clearCart(userId: number): Promise<any> {
     const transaction = await this.shoppingCartModel.sequelize.transaction();

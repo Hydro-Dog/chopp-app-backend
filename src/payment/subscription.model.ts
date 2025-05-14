@@ -14,9 +14,11 @@ import { Order } from 'src/order/order.model';
 @Table({ tableName: 'payment_subscriptions' })
 export class Subscription extends Model<Subscription> {
   @PrimaryKey
-  @AutoIncrement
-  @Column(DataType.INTEGER)
-  id: number;
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+  })
+  id: string;
 
   @Column({
     type: DataType.STRING,
@@ -27,10 +29,10 @@ export class Subscription extends Model<Subscription> {
 
   @ForeignKey(() => Order)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  orderId: number;
+  orderId: string;
 
   @Column({
     type: DataType.STRING,

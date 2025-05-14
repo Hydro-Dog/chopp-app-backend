@@ -1,30 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Chat } from './chats.model';
 import { Message } from './messages.model';
 
 @Table({ tableName: 'chat_messages', createdAt: false, updatedAt: false })
 export class ChatMessages extends Model<ChatMessages> {
-  @ApiProperty({ example: '1', description: 'primary key id' })
+  @ApiProperty({ example: 'uuid', description: 'primary key id' })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     unique: true,
-    autoIncrement: true,
     primaryKey: true,
+    defaultValue: DataType.UUIDV4,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => Message)
-  @Column
-  messageId: number;
+  @Column({
+    type: DataType.UUID,
+  })
+  messageId: string;
 
   @ForeignKey(() => Chat)
-  @Column
-  chatId: number;
+  @Column({
+    type: DataType.UUID,
+  })
+  chatId: string;
 }
