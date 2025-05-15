@@ -39,8 +39,8 @@ module.exports = {
         onDelete: 'SET NULL',
       },
       imagesOrder: {
-        type: Sequelize.ARRAY(Sequelize.INTEGER),
-        allowNull: true,
+        type: Sequelize.UUID,
+        defaultValue: [Sequelize.literal('uuid_generate_v4()')],
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
