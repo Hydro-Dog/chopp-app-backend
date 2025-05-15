@@ -80,7 +80,11 @@ export class OrderService {
 
     try {
       const lastOrder = await this.findLastOrderRaw(userId);
-      if (lastOrder && lastOrder.orderStatus !== ORDER_STATUS.DELIVERED) {
+      if (
+        lastOrder &&
+        lastOrder.orderStatus !== ORDER_STATUS.DELIVERED &&
+        lastOrder.orderStatus !== ORDER_STATUS.REFUNDED
+      ) {
         throw new Error('Дождитесь завершения предыдущего заказа.');
       }
 
