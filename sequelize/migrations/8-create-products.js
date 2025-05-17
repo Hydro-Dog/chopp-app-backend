@@ -40,7 +40,7 @@ module.exports = {
       },
       imagesOrder: {
         type: Sequelize.UUID,
-        defaultValue: [Sequelize.literal('uuid_generate_v4()')],
+        defaultValue: [],
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
