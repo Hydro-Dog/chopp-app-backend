@@ -14,7 +14,7 @@ module.exports = {
       },
       orderId: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        // defaultValue: Sequelize.literal('uuid_generate_v4()'),
         allowNull: true,
         references: {
           model: 'orders',
@@ -24,7 +24,7 @@ module.exports = {
       },
       productId: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        // defaultValue: Sequelize.literal('uuid_generate_v4()'),
         allowNull: true,
         references: {
           model: 'products',
