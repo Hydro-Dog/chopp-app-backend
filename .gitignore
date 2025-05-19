@@ -50,10 +50,13 @@ lerna-debug.log*
 .env.stg
 
 start-this-shit.sh
+local-db.txt
+stage-db.txt
 
 # temp directory
 .temp
 .tmp
+
 
 # Runtime data
 pids

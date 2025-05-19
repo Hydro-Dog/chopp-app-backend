@@ -6,6 +6,12 @@ module.exports = {
     await queryInterface.sequelize.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 
     await queryInterface.createTable('active_ws_sessions', {
+      id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        primaryKey: true,
+        allowNull: false,
+      },
       userId: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
@@ -25,6 +31,8 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW,
       },
+      createdAt: Sequelize.DATE,
+      updatedAt: Sequelize.DATE,
     });
   },
 
