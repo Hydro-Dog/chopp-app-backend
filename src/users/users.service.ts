@@ -27,7 +27,7 @@ export class UsersService {
       email: adminLogin,
       password: hashedPassword,
       fullName: 'New Admin',
-      phoneNumber: '000-000-0000',
+      phoneNumber: '0000000000',
     });
 
     const adminRole = await this.roleRepository.findOne({
