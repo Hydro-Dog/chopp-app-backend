@@ -213,6 +213,10 @@ export class OrderService {
             },
           ],
         },
+        {
+          model: User, // <--- ДОБАВЬ ЭТО
+          attributes: ['id', 'name', 'phoneNumber', 'email'], // необязательно, но лучше явно указать
+        },
       ],
     });
 
@@ -314,6 +318,10 @@ export class OrderService {
               include: [{ model: FileModel, as: 'images' }, { model: Category }],
             },
           ],
+        },
+        {
+          model: User, 
+          attributes: ['id', 'fullName', 'phoneNumber', 'email'],
         },
       ],
     });

@@ -39,12 +39,13 @@ import { SubmitLoginModule } from './submit-login/submit-login.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
 
 
-console.log('process.env: ', process.env)
 @Module({
   imports: [
     ConfigModule.forRoot({
