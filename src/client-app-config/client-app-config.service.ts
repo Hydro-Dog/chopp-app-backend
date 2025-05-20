@@ -8,7 +8,7 @@ import { WS_MESSAGE_TYPE } from 'src/shared/enums';
 @Injectable()
 export class ClientAppConfigService implements OnModuleInit {
   private readonly logger = new Logger(ClientAppConfigService.name);
-  private readonly DEFAULT_CONFIG_ID = process.env.DEFAULT_CONFIG_ID;;
+  private readonly DEFAULT_CONFIG_ID = process.env.DEFAULT_CONFIG_ID;
   constructor(
     @InjectModel(ClientAppConfig)
     private clientAppModel: typeof ClientAppConfig,
