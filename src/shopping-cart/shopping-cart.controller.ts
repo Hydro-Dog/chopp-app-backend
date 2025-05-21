@@ -3,12 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
-  Put,
   UseGuards,
   Req,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';

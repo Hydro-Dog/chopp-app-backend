@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Req, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Req, Get, Query, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { OrderService } from './order.service';
@@ -11,8 +11,7 @@ import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles-auth.guard';
 import { CreateOrderDTO } from './dto/create-order.dto';
-import { ORDER_STATUS } from 'src/shared/enums';
-import { AppEnabledGuard } from 'src/shared/guards';
+import { ORDER_STATUS } from 'src/shared/enums'
 
 @ApiTags('orders')
 @Controller('orders')
@@ -196,7 +195,7 @@ export class OrderController {
     type: Order,
   })
   @ApiResponse({ status: 404, description: 'Заказ не найден.' })
-  async getOrderById(@Param('id', ParseIntPipe) id: number): Promise<Order> {
+  async getOrderById(@Param('id') id: number): Promise<Order> {
     return this.orderService.findOneOrder(id);
   }
 }

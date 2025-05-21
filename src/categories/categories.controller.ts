@@ -1,9 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoriesService } from './categories.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category } from './category.model';
-
 import { UpdateCategoriesDto } from './dto/update-categories.dto';
 import { UpdateCategoryDto } from './dto/update-category-title.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -56,7 +55,7 @@ export class CategoriesController {
     type: [Category],
   })
   @UseGuards(JwtAuthGuard)
-  async deleteCategory(@Param('id', ParseIntPipe) id: string): Promise<Category[]> {
+  async deleteCategory(@Param('id') id: string): Promise<Category[]> {
     return this.categoriesService.deleteCategory(id);
   }
 
@@ -69,7 +68,7 @@ export class CategoriesController {
   })
   @UseGuards(JwtAuthGuard)
   async updateCategoryTitle(
-    @Param('id', ParseIntPipe) id: string,
+    @Param('id') id: string,
     @Body() { title }: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoriesService.updateCategoryTitle(id, title);
