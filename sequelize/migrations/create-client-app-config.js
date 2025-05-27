@@ -24,6 +24,7 @@ module.exports = {
       deliveryAndPaymentsVerbose: Sequelize.TEXT,
       publicOfferVerbose: Sequelize.TEXT,
       description: Sequelize.TEXT,
+      phoneNumber: Sequelize.TEXT,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
     });

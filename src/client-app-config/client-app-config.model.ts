@@ -111,4 +111,15 @@ export class ClientAppConfig extends Model<ClientAppConfig> {
     allowNull: true,
   })
   description?: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Номер телефона для связи',
+    required: false,
+  })
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  phoneNumber?: string;
 }

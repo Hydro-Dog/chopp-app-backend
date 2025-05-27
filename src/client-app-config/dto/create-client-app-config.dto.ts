@@ -63,4 +63,11 @@ export class CreateClientAppConfigDto {
     required: false,
   })
   description?: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Номер телефона для связи',
+    required: false,
+  })
+  phoneNumber?: string;
 }

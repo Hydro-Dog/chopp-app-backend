@@ -200,6 +200,7 @@ export class OrderService {
   }
 
   async findLastOrder(userId: number): Promise<Order> {
+    console.log('findLastOrder 1')
     const order = await this.orderModel.findOne({
       where: { userId },
       order: [['createdAt', 'DESC']], // Находим последний заказ
@@ -214,8 +215,8 @@ export class OrderService {
           ],
         },
         {
-          model: User, // <--- ДОБАВЬ ЭТО
-          attributes: ['id', 'name', 'phoneNumber', 'email'], // необязательно, но лучше явно указать
+          model: User, 
+          attributes: ['id', 'fullName', 'phoneNumber', 'email'], // необязательно, но лучше явно указать
         },
       ],
     });

@@ -4,11 +4,10 @@ import { CreateClientAppConfigDto } from './dto/create-client-app-config.dto';
 import { ClientAppConfigService } from './client-app-config.service';
 import { ClientAppConfig } from './client-app-config.model';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles-auth.guard';
 
 @ApiTags('client-app-config')
 @Controller('client-app-config')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export class ClientAppConfigController {
   constructor(private clientAppConfigService: ClientAppConfigService) {}
 
@@ -24,6 +23,9 @@ export class ClientAppConfigController {
     status: 400,
     description: 'Bad request. Possible reasons: Invalid data in request body.',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RolesGuard)
   createOrUpdateConfig(
     @Body() dto: CreateClientAppConfigDto,
   ): Promise<ClientAppConfig> {
