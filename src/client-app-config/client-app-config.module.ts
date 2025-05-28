@@ -14,5 +14,6 @@ import { NotificationModule } from 'src/websockets/notification/notification.mod
   ],
   controllers: [ClientAppConfigController],
   providers: [ClientAppConfigService],
+  exports: [ClientAppConfigService],
 })
 export class ClientAppConfigModule {}

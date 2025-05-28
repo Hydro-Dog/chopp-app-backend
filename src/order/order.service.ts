@@ -19,6 +19,8 @@ import { User } from 'src/users/users.model';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 import { OrderStats } from './order-stats.model';
 import { formatPhoneNumber } from 'src/shared/utils/phone-format.utils';
+import { ClientAppConfigService } from 'src/client-app-config/client-app-config.service';
+import { ProductService } from 'src/products/products.service';
 
 @Injectable()
 export class OrderService {
@@ -31,6 +33,8 @@ export class OrderService {
     @InjectModel(ShoppingCartItem) private readonly shoppingCartItemModel: typeof ShoppingCartItem,
     private readonly paymentService: PaymentsService,
     private readonly notificationService: NotificationService,
+    private readonly clientAppConfigService: ClientAppConfigService,
+    private readonly productsService: ProductService, // 👈 вот здесь
   ) {}
 
   private async findLastOrderRaw(userId: string): Promise<Order | null> {
@@ -89,7 +93,6 @@ export class OrderService {
       }
 
       const cart = await this.getCart(userId, transaction);
-
       phoneNumber = formatPhoneNumber(phoneNumber);
 
       const order = await this.orderModel.create(
@@ -106,6 +109,35 @@ export class OrderService {
       );
 
       await this.createOrderItems(order.id, cart.items, transaction);
+
+      const config = await this.clientAppConfigService.getConfig();
+      let deliveryItem = null;
+
+      if (
+        config?.freeDeliveryIncluded &&
+        cart.totalPrice < config.freeDeliveryThreshold &&
+        config.averageDeliveryCost > 0
+      ) {
+        const deliveryProduct = await this.productsService.getProductById(process.env.DELIVERY_PRODUCT_ID);
+        if (!deliveryProduct) {
+          throw new NotFoundException('Продукт "Доставка" не найден.');
+        }
+
+        deliveryItem = await this.orderItemModel.create(
+          {
+            orderId: order.id,
+            productId: deliveryProduct.id,
+            quantity: 1,
+            price: config.averageDeliveryCost,
+          },
+          { transaction },
+        );
+
+        order.totalPrice += config.averageDeliveryCost;
+        order.quantity += 1;
+        await order.save({ transaction });
+      }
+
       const user = await this.userModel.findByPk(userId, { transaction });
 
       const items = await this.orderItemModel.findAll({
@@ -162,7 +194,7 @@ export class OrderService {
         amount: order.totalPrice.toString(),
         currency: 'RUB',
         description: `Оплата за заказ ${order.id}`,
-        returnUrl, // Используем переданный returnUrl
+        returnUrl,
         metadata: { order_id: order.id },
         user,
         items,
@@ -175,6 +207,7 @@ export class OrderService {
       order.address = address;
 
       await order.save({ transaction });
+
       await this.shoppingCartItemModel.destroy({ where: { shoppingCartId: cart.id }, transaction });
       await cart.update({ totalPrice: 0, quantity: 0 }, { transaction });
       await transaction.commit();
@@ -200,7 +233,6 @@ export class OrderService {
   }
 
   async findLastOrder(userId: number): Promise<Order> {
-    console.log('findLastOrder 1')
     const order = await this.orderModel.findOne({
       where: { userId },
       order: [['createdAt', 'DESC']], // Находим последний заказ
@@ -215,7 +247,7 @@ export class OrderService {
           ],
         },
         {
-          model: User, 
+          model: User,
           attributes: ['id', 'fullName', 'phoneNumber', 'email'], // необязательно, но лучше явно указать
         },
       ],
@@ -321,7 +353,7 @@ export class OrderService {
           ],
         },
         {
-          model: User, 
+          model: User,
           attributes: ['id', 'fullName', 'phoneNumber', 'email'],
         },
       ],

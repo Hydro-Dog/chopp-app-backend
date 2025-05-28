@@ -14,13 +14,18 @@ import { NotificationService } from 'src/websockets/notification/notification.se
 import { NotificationGateway } from 'src/websockets/notification/notification.gateway';
 import { WsJwtMiddleware } from 'src/middlewares/ws-jwt-middleware';
 import { OrderStats } from './order-stats.model';
+import { ClientAppConfigModule } from 'src/client-app-config/client-app-config.module';
+import { ClientAppConfig } from 'src/client-app-config/client-app-config.model';
+import { ProductsModule } from 'src/products/products.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([Order, OrderItem, User, ShoppingCart, ShoppingCartItem, OrderStats]),
     forwardRef(() => AuthModule),
     forwardRef(() => NotificationModule),
+    forwardRef(() => ClientAppConfigModule),
     forwardRef(() => PaymentsModule),
+    forwardRef(() => ProductsModule),
   ],
   controllers: [OrderController],
   providers: [OrderService],

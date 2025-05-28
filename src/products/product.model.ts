@@ -23,9 +23,9 @@ export class Product extends Model<Product> {
 
   @Column({
     type: DataType.TEXT,
-    allowNull: false,
+    allowNull: true,
   })
-  description: string;
+  description?: string;
 
   @Column({
     type: DataType.FLOAT,
@@ -45,8 +45,9 @@ export class Product extends Model<Product> {
   @ForeignKey(() => Category)
   @Column({
     type: DataType.UUID,
+    allowNull: true,
   })
-  categoryId: string;
+  categoryId: string | null;
 
   @BelongsToMany(() => FileModel, () => ProductFile)
   images: FileModel[];

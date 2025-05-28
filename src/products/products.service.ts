@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from './product.model';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -8,13 +8,33 @@ import { FileModel } from 'src/files/file.model';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiResponse, PRODUCT_STATE } from 'src/shared/enums';
 import { ProductFile } from './product-file.model';
+import { ClientAppConfigService } from 'src/client-app-config/client-app-config.service';
 
 @Injectable()
-export class ProductService {
+export class ProductService implements OnModuleInit {
+  private readonly logger = new Logger(ProductService.name);
+
   constructor(
     @InjectModel(Product) private readonly productRepository: typeof Product,
     @InjectModel(ProductFile) private readonly productFileRepository: typeof ProductFile,
   ) {}
+
+  async onModuleInit() {
+    if (process.env.NODE_ENV !== 'development') return;
+
+    const deliveryProduct = await this.productRepository.findByPk(process.env.DELIVERY_PRODUCT_ID);
+    if (!deliveryProduct) {
+      await this.productRepository.create({
+        id: process.env.DELIVERY_PRODUCT_ID,
+        title: 'Доставка',
+        description: 'Услуга доставки заказа',
+        price: 0,
+        state: PRODUCT_STATE.HIDDEN,
+      });
+    }
+
+    this.logger.log('🚀 Создан продукт ДОСТАВКА стоимостью 0 руб');
+  }
 
   async createProduct(dto: CreateProductDto): Promise<Product> {
     const existingProduct = await this.productRepository.findOne({
@@ -85,20 +105,25 @@ export class ProductService {
     search?: string,
     sort: string = 'id',
     order: string = 'ASC',
-    state?: PRODUCT_STATE[], // Массив состояний
+    state?: PRODUCT_STATE[],
   ) {
     const offset = (pageNumber - 1) * limit;
 
-    const whereCondition: any = {};
+    const whereCondition: any = {
+      id: { [Op.ne]: process.env.DELIVERY_PRODUCT_ID }, // ⛔️ Исключаем товар "Доставка"
+    };
+
     if (categoryId) whereCondition.categoryId = categoryId;
+
     if (search) {
       whereCondition[Op.or] = [
         { title: { [Op.iLike]: `%${search}%` } },
         { description: { [Op.iLike]: `%${search}%` } },
       ];
     }
+
     if (state && state.length > 0) {
-      whereCondition.state = { [Op.in]: state }; // Фильтр по массиву состояний
+      whereCondition.state = { [Op.in]: state };
     }
 
     const validSortColumns = ['id', 'title', 'price', 'createdAt', 'updatedAt'];

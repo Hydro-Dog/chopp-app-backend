@@ -16,6 +16,6 @@ import { ProductFile } from './product-file.model';
   ],
   controllers: [ProductsController],
   providers: [ProductService],
-  exports: [ProductService], // Экспортируйте ProductService, если он будет использоваться в других модулях
+  exports: [ProductService],
 })
 export class ProductsModule {}
