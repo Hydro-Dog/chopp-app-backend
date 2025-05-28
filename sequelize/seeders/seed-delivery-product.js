@@ -12,7 +12,7 @@ module.exports = {
           price: 0,
           state: 'PUBLISHED', // обязательно укажи валидное значение PRODUCT_STATE
           categoryId: null, // если это "системный" товар — можно оставить null
-          imagesOrder: [],
+          imagesOrder: Sequelize.literal(`ARRAY[]::UUID[]`),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
