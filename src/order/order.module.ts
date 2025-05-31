@@ -15,8 +15,8 @@ import { NotificationGateway } from 'src/websockets/notification/notification.ga
 import { WsJwtMiddleware } from 'src/middlewares/ws-jwt-middleware';
 import { OrderStats } from './order-stats.model';
 import { ClientAppConfigModule } from 'src/client-app-config/client-app-config.module';
-import { ClientAppConfig } from 'src/client-app-config/client-app-config.model';
 import { ProductsModule } from 'src/products/products.module';
+import { TelegramOrderBotModule } from 'src/telegram/order-bot/telegram-order-bot.module';
 
 @Module({
   imports: [
@@ -26,6 +26,7 @@ import { ProductsModule } from 'src/products/products.module';
     forwardRef(() => ClientAppConfigModule),
     forwardRef(() => PaymentsModule),
     forwardRef(() => ProductsModule),
+    TelegramOrderBotModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

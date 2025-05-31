@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '../../users/users.service';
 import { formatPhoneNumber } from 'src/shared/utils/phone-format.utils';
 
 const axios = require('axios');
@@ -10,8 +10,8 @@ const http = require('http');
 const https = require('https');
 
 @Injectable()
-export class TelegramService implements OnModuleInit {
-  private readonly logger = new Logger(TelegramService.name);
+export class TelegramUsersBotService implements OnModuleInit {
+  private readonly logger = new Logger(TelegramUsersBotService.name);
   private readonly botToken: string;
   private readonly apiUrl: string;
   private codeMap: Record<string, string> = {};
@@ -21,7 +21,7 @@ export class TelegramService implements OnModuleInit {
     private readonly httpService: HttpService,
     private readonly usersService: UsersService,
   ) {
-    this.botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN');
+    this.botToken = this.configService.get<string>('TELEGRAM_USER_BOT_TOKEN');
     this.apiUrl = `https://api.telegram.org/bot${this.botToken}`;
 
     // 🛠 Создаём кастомный axios instance с отключённым keep-alive

@@ -8,3 +8,14 @@ export enum ORDER_STATUS {
   DELIVERED = 'delivered',
   REFUNDED = 'refunded',
 }
+
+export enum ORDER_STATUS_RU {
+  awaitingPayment = 'Ожидает оплаты',
+  pending = 'В ожидании',
+  paymentSucceeded = 'Оплата прошла успешно',
+  paymentCanceled = 'Оплата отменена',
+  inProgress = 'В обработке',
+  inDeliveryProcess = 'В процессе доставки',
+  delivered = 'Доставлен',
+  refunded = 'Возврат средств',
+}

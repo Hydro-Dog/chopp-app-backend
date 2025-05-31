@@ -7,7 +7,7 @@ import { Role } from 'src/roles/roles.model';
 import { UserRoles } from 'src/roles/user-roles.model';
 import { RolesModule } from 'src/roles/roles.module';
 import { AuthModule } from 'src/auth/auth.module';
-import { TelegramModule } from '../telegram/telegram.module';
+import { TelegramUsersBotModule } from '../telegram/user-bot/telegram-user-bot.module';
 import { ShoppingCart } from 'src/shopping-cart/shopping-cart.model';
 
 @Module({
@@ -17,7 +17,7 @@ import { ShoppingCart } from 'src/shopping-cart/shopping-cart.model';
     SequelizeModule.forFeature([User, Role, UserRoles, ShoppingCart]),
     RolesModule,
     forwardRef(() => AuthModule),
-    forwardRef(() => TelegramModule),
+    forwardRef(() => TelegramUsersBotModule),
   ],
   exports: [UsersService],
 })

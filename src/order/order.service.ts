@@ -21,6 +21,7 @@ import { OrderStats } from './order-stats.model';
 import { formatPhoneNumber } from 'src/shared/utils/phone-format.utils';
 import { ClientAppConfigService } from 'src/client-app-config/client-app-config.service';
 import { ProductService } from 'src/products/products.service';
+import { TelegramOrderBotService } from 'src/telegram/order-bot/telegram-order-bot.service';
 
 @Injectable()
 export class OrderService {
@@ -35,6 +36,7 @@ export class OrderService {
     private readonly notificationService: NotificationService,
     private readonly clientAppConfigService: ClientAppConfigService,
     private readonly productsService: ProductService, // 👈 вот здесь
+    private readonly telegramOrderBotService: TelegramOrderBotService,
   ) {}
 
   private async findLastOrderRaw(userId: string): Promise<Order | null> {
@@ -224,6 +226,8 @@ export class OrderService {
           payload: order,
         },
       });
+
+      await this.telegramOrderBotService.sendMessageSeller(order);
 
       return order.toJSON() as CreatePaymentResponseDto;
     } catch (error) {
