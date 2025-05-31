@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SubmitLoginService } from './submit-login.service';
-import { TelegramModule } from '../telegram/telegram.module';
+import { TelegramUsersBotModule } from '../telegram/user-bot/telegram-user-bot.module';
 
 @Module({
-  imports: [TelegramModule],
+  imports: [TelegramUsersBotModule],
   providers: [SubmitLoginService],
   exports: [SubmitLoginService],
 })

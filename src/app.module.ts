@@ -36,15 +36,15 @@ import { OrderStats } from './order/order-stats.model';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FileCleanupModule } from './file-cleanup/file-cleanup.module';
 import { SubmitLoginModule } from './submit-login/submit-login.module';
-import { TelegramModule } from './telegram/telegram.module';
+import { TelegramUsersBotModule } from './telegram/user-bot/telegram-user-bot.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { TelegramOrderBotModule } from './telegram/order-bot/telegram-order-bot.module';
 import * as redisStore from 'cache-manager-redis-store';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
-
 
 @Module({
   imports: [
@@ -114,8 +114,9 @@ const isProd = process.env.NODE_ENV === 'production';
     AnalyticsModule,
     FileCleanupModule,
     ScheduleModule.forRoot(),
-    TelegramModule,
+    TelegramUsersBotModule,
     SubmitLoginModule,
+    TelegramOrderBotModule,
   ],
   controllers: [],
   providers: [],

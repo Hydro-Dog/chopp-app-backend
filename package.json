@@ -61,6 +61,7 @@
     "socket.io": "^4.8.0",
     "swagger-ui-express": "^5.0.1",
     "systeminformation": "^5.25.11",
+    "telegraf": "^4.16.3",
     "uuid": "^11.0.3"
   },
   "devDependencies": {

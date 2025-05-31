@@ -1,12 +1,12 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { TelegramService } from '../telegram/telegram.service';
+import { TelegramUsersBotService } from '../telegram/user-bot/telegram-user-bot.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
 @Injectable()
 export class SubmitLoginService {
   constructor(
-    private readonly telegramService: TelegramService,
+    private readonly telegramService: TelegramUsersBotService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
