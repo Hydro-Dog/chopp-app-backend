@@ -309,10 +309,20 @@ export class OrderService {
 
     const whereCondition: any = {};
 
-    // 🔍 Фильтр по ID заказа (если в search пришло число)
-    if (search) {
-      if (!isNaN(Number(search))) {
-        whereCondition.id = Number(search);
+    // 🔍 Фильтр по ID заказа (если в search пришёл валидный UUID)
+    if (search?.trim()) {
+      const trimmed = search.trim();
+      if (validateUUID(trimmed)) {
+        whereCondition.id = trimmed;
+      } else {
+        // Если search — невалидный UUID, возвращаем пустой результат
+        return {
+          items: [],
+          totalItems: 0,
+          totalPages: 0,
+          pageNumber: page,
+          limit,
+        };
       }
     }
 
@@ -320,14 +330,16 @@ export class OrderService {
     if (startDate || endDate) {
       whereCondition.createdAt = {};
       if (startDate) {
-        whereCondition.createdAt[Op.gte] = new Date(startDate); // Включает startDate
+        whereCondition.createdAt[Op.gte] = new Date(startDate);
       }
       if (endDate) {
-        whereCondition.createdAt[Op.lte] = new Date(endDate); // Включает endDate
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999); // 👈 чтобы включать всю дату
+        whereCondition.createdAt[Op.lte] = end;
       }
     }
 
-    // ✅ Фильтр по статусу (если передан список статусов)
+    // ✅ Фильтр по статусу
     if (status && status.length > 0) {
       whereCondition.orderStatus = { [Op.in]: status };
     }
@@ -446,3 +458,7 @@ export class OrderService {
     }
   }
 }
+function validateUUID(trimmed: string) {
+  throw new Error('Function not implemented.');
+}
+
