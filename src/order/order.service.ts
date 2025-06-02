@@ -21,6 +21,7 @@ import { OrderStats } from './order-stats.model';
 import { formatPhoneNumber } from 'src/shared/utils/phone-format.utils';
 import { ClientAppConfigService } from 'src/client-app-config/client-app-config.service';
 import { ProductService } from 'src/products/products.service';
+import { validate as validateUUID } from 'uuid';
 
 @Injectable()
 export class OrderService {
@@ -457,8 +458,5 @@ export class OrderService {
       throw error;
     }
   }
-}
-function validateUUID(trimmed: string) {
-  throw new Error('Function not implemented.');
 }
 
