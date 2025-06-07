@@ -51,13 +51,11 @@ export class UsersService {
     user.roles = [role];
     await user.$set('roles', [role.id]);
 
-    if (process.env.NODE_ENV === 'development') {
-      await this.shoppingCartRepository.create({
-        userId: user.id,
-        totalPrice: 0,
-        quantity: 0,
-      });
-    }
+    await this.shoppingCartRepository.create({
+      userId: user.id,
+      totalPrice: 0,
+      quantity: 0,
+    });
 
     return user;
   }
